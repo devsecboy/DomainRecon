@@ -1,0 +1,5 @@
+Usage : python DomainRecon.py
+
+In-order to run DomainRecon 
+create __init__.py in "Sublist3r" directory
+
