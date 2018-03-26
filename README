@@ -1,0 +1,5 @@
+git submodule update --init --recursive
+
+create __init__.py in "Sublist3r" directory
+
+Usage : python DomainRecon.py
