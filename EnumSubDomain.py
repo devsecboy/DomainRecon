@@ -6,11 +6,14 @@ import datetime
 import os
 from Sublist3r import sublist3r
 import csv
+import string
+
+cloudEnum = "./cloudflare_enum/"
+sys.path.insert(0,cloudEnum)
 from cloudflare_enum import *
 
 reconPath = "./recon-ng/"
 sys.path.insert(0,reconPath)
-
 from recon.core import base
 from recon.core.framework import Colors
 
@@ -65,25 +68,26 @@ class EnumSubDomain(object):
 		for strDomain in sublisterOutput:
 			subDomains.append(strDomain)
 
-	def runCloudflareEnum(self, domain, subDomains):
+	def runCloudflareEnum(self, domain, subDomains, username, password):
 		#CloudFlare enumeration
 		cloud = cloudflare_enum()
-        	cloud.print_banner()
-        	cloud.log_in( "CLOUDFLARE_UNAME", "CLOUDFLARE_PASSWORD" )
-        	cloud.get_spreadsheet( domain )
-		cloudEnumOutput='./cloudflare_enum/'+domain+'.csv'
+		cloud.print_banner()
+		cloud.log_in( username, password)
+		cloud.get_spreadsheet( domain )
+		cloudEnumOutput=string.replace(domain, '.', '_')+'.csv'
 		with open(cloudEnumOutput, 'r') as csvfile:
 			for row in csv.reader(csvfile, delimiter=','):
-				subDomains.append(row[0])
-		os.remove(cloudEnumOutput)
+				if not row[0] in subDomains:
+					subDomains.append(row[0])
+		os.rename(cloudEnumOutput, "./Output/cloud_enum_"+cloudEnumOutput)
 
-	def GetSubDomains(self, domain, isRunCloudFlare):
+	def GetSubDomains(self, domain, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
 		subDomains=list()
 		#Recon NG enumeration
-		self.RunRecon(domain, subDomains, False)
+		self.RunRecon(domain, subDomains, isBruteForce)
 		self.runSublist3r(domain, subDomains)
 		if isRunCloudFlare:
-			self.runCloudflareEnum(domain, subDomains)
+			self.runCloudflareEnum(domain, subDomains, coudFlareUserName, cloudFlarePassword)
 
 		file = './Output/' + domain+'.txt'
 		with open (file, 'w') as fp:
