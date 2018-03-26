@@ -6,6 +6,7 @@ import datetime
 import os
 from Sublist3r import sublist3r
 import csv
+from cloudflare_enum import *
 
 reconPath = "./recon-ng/"
 sys.path.insert(0,reconPath)
@@ -58,18 +59,31 @@ class EnumSubDomain(object):
 				subDomains.append(row[0])
 		os.remove(reconNgOutput)
 
-	#get the existing subdomains and check for udate using ReconNG and Sublist3r and update it in to the database
 	def runSublist3r(self, domain, subDomains):	
 		#Sublister enumeration
 		sublisterOutput = sublist3r.main(domain, 30, None, None, False, False, False, None)
 		for strDomain in sublisterOutput:
 			subDomains.append(strDomain)
 
-	def GetSubDomains(self, domain):
+	def runCloudflareEnum(self, domain, subDomains):
+		#CloudFlare enumeration
+		cloud = cloudflare_enum()
+        	cloud.print_banner()
+        	cloud.log_in( "CLOUDFLARE_UNAME", "CLOUDFLARE_PASSWORD" )
+        	cloud.get_spreadsheet( domain )
+		cloudEnumOutput='./cloudflare_enum/'+domain+'.csv'
+		with open(cloudEnumOutput, 'r') as csvfile:
+			for row in csv.reader(csvfile, delimiter=','):
+				subDomains.append(row[0])
+		os.remove(cloudEnumOutput)
+
+	def GetSubDomains(self, domain, isRunCloudFlare):
 		subDomains=list()
 		#Recon NG enumeration
 		self.RunRecon(domain, subDomains, False)
 		self.runSublist3r(domain, subDomains)
+		if isRunCloudFlare:
+			self.runCloudflareEnum(domain, subDomains)
 
 		file = './Output/' + domain+'.txt'
 		with open (file, 'w') as fp:

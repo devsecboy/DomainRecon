@@ -10,7 +10,7 @@ class DomainRecon(object):
 		#self.eyeWitness=EyeWitness()
 		self.subDomainTakeOverChk=SubDomainTakeOverChk()
 	
-	def collectSubDomain(self, domain):
+	def collectSubDomain(self, domain, False):
 		self.enumSubDomain.GetSubDomains(domain)
 
 	'''def collectScreenShot(self):
