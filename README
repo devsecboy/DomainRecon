@@ -1,5 +1,13 @@
-git submodule update --init --recursive
+To run the tool in ubuntu, follow the below mentioned steps
 
-create __init__.py in "Sublist3r" directory
+01. git clone https://github.com/x73x61x6ex6ax61x79/DomainRecon.git
+02. cd DomainRecon
+03. git submodule update --init --recursive
+04. sudo apt install python-pip
+05. sudo pip install -r Sublist3r/requirements.txt
+06. sudo pip install -r recon-ng/REQUIREMENTS
+07. sudo ./EyeWitness/setup/setup.sh
+08. create __init__.py in "Sublist3r" directory
+	Using command : touch ./Sublist3r/__init__.py
 
 Usage : python DomainRecon.py
