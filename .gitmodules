@@ -1,0 +1,9 @@
+[submodule "EyeWitness"]
+	path = EyeWitness
+	url = https://github.com/ChrisTruncer/EyeWitness.git
+[submodule "Sublist3r"]
+	path = Sublist3r
+	url = https://github.com/aboul3la/Sublist3r.git
+[submodule "recon-ng"]
+	path = recon-ng
+	url = https://github.com/methos2016/recon-ng.git
