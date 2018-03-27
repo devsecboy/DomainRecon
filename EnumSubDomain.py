@@ -84,10 +84,19 @@ class EnumSubDomain(object):
 	def GetSubDomains(self, domain, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
 		subDomains=list()
 		#Recon NG enumeration
-		self.RunRecon(domain, subDomains, isBruteForce)
-		self.runSublist3r(domain, subDomains)
-		if isRunCloudFlare:
-			self.runCloudflareEnum(domain, subDomains, coudFlareUserName, cloudFlarePassword)
+		try:
+			self.RunRecon(domain, subDomains, isBruteForce)
+		except:
+			print "Error in recon-ng"
+		try:
+			self.runSublist3r(domain, subDomains)
+		except: 
+			print "Error in Sublist3r"
+		try:
+			if isRunCloudFlare:
+				self.runCloudflareEnum(domain, subDomains, coudFlareUserName, cloudFlarePassword)
+		except:
+			print "Error in Enum cloud flare"
 
 		file = './Output/' + domain+'.txt'
 		with open (file, 'w') as fp:
