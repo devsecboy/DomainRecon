@@ -10,3 +10,6 @@
 [submodule "cloudflare_enum"]
 	path = cloudflare_enum
 	url = https://github.com/mandatoryprogrammer/cloudflare_enum.git
+[submodule "massdns"]
+	path = massdns
+	url = https://github.com/blechschmidt/massdns.git
