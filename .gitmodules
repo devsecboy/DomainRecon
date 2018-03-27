@@ -13,3 +13,12 @@
 [submodule "massdns"]
 	path = massdns
 	url = https://github.com/blechschmidt/massdns.git
+[submodule "masscan"]
+	path = masscan
+	url = https://github.com/robertdavidgraham/masscan.git
+[submodule "gobuster"]
+	path = gobuster
+	url = https://github.com/OJ/gobuster.git
+[submodule "parameth"]
+	path = parameth
+	url = https://github.com/maK-/parameth.git
