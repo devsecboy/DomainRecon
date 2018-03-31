@@ -10,6 +10,7 @@ import string
 import socket
 import argparse
 from GlobalVariables import *
+import subprocess
 
 cloudEnum = "./cloudflare_enum/"
 sys.path.insert(0,cloudEnum)
@@ -103,6 +104,11 @@ class EnumSubDomain(object):
 			if isRunMassDNS:
 				cmd = './massdns/scripts/ct.py ' + domain +' | ./massdns/bin/massdns -r massdns/lists/resolvers.txt -t A -o S -w ' + outFile
 				subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
+				with open (outFile, 'r') as fp:
+					for line in fp:
+						line = line[0: line.find(" ") - 1]
+						if not line in subDomains:
+							subDomains.append(line)
 		except:
 			print "Error in MassDNS"
 
@@ -111,9 +117,8 @@ class EnumSubDomain(object):
 				self.runCloudflareEnum(domain, subDomains, coudFlareUserName, cloudFlarePassword)
 		except:
 			print "Error in Enum cloud flare"
-
 		
-		with open (outFile, 'a') as fp:
+		with open (outFile, 'w') as fp:
 			for subDomain in subDomains:
 				fp.write("%s\n" % subDomain)
 
@@ -146,5 +151,3 @@ if __name__ == "__main__":
 		cli_parsed.username, 
 		cli_parsed.password, 
 		cli_parsed.bruteforce)
-
-		
