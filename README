@@ -12,4 +12,4 @@ To run the tool in ubuntu, follow the below mentioned steps
 09. sudo apt-get install libldns-dev
 10. cd massdns
 11. make
-Usage : python DomainRecon.py
+Usage : python EnumSubDomain.py -h
