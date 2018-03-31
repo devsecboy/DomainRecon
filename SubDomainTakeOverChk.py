@@ -137,3 +137,7 @@ class SubDomainTakeOverChk(object):
 								result = "[+] Unmanaged text '%s' found in response for '%s'! HTTPS response is:" % (msg_to_locate, domain)
 								result += https_resp.text+"\n"
 								self.outmsg(result, f, self.ANSI_GRN)
+
+if __name__ == "__main__":
+	subDomainTakeOverChk=SubDomainTakeOverChk()
+	subDomainTakeOverChk.runSubDomainTakeOverChk()

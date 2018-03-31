@@ -7,6 +7,8 @@ import os
 from Sublist3r import sublist3r
 import csv
 import string
+import socket
+import argparse
 
 cloudEnum = "./cloudflare_enum/"
 sys.path.insert(0,cloudEnum)
@@ -81,15 +83,17 @@ class EnumSubDomain(object):
 					subDomains.append(row[0])
 		os.rename(cloudEnumOutput, "./Output/cloud_enum_"+cloudEnumOutput)
 
-	def GetSubDomains(self, domain, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
+	def GetSubDomains(self, domain, isRunSublist3r, isRunReconNG, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
 		subDomains=list()
 		#Recon NG enumeration
 		try:
-			self.RunRecon(domain, subDomains, isBruteForce)
+			if isRunReconNG:
+				self.RunRecon(domain, subDomains, isBruteForce)
 		except:
 			print "Error in recon-ng"
 		try:
-			self.runSublist3r(domain, subDomains)
+			if isRunSublist3r:
+				self.runSublist3r(domain, subDomains)
 		except: 
 			print "Error in Sublist3r"
 		try:
@@ -102,4 +106,36 @@ class EnumSubDomain(object):
 		with open (file, 'w') as fp:
 			for subDomain in subDomains:
 				fp.write("%s\n" % subDomain)
+
+	def create_cli_parser(self):
+		self.parser = argparse.ArgumentParser(add_help=False, description="Domain recon is a tool to gather information about target")
+		self.parser.add_argument('-h', '-?', '--h', '-help', '--help', action="store_true", help=argparse.SUPPRESS)
+		input_options = self.parser.add_argument_group('Input Options')
+		input_options.add_argument('--domain', metavar='DomainName', default=None, help='Website domain name')
+		input_options.add_argument('--cloud_enum', default=False, action='store_true', help='Is it require to do cloud flare enumeration')
+		input_options.add_argument('--username', metavar='Username', default=None, help='CloudFlare username')
+		input_options.add_argument('--password', metavar='Password', default=None, help='CloudFlare password')
+		input_options.add_argument('--bruteforce', default=False, action='store_true', help='Is it require to do subdomain bruteforce using recon-ng')
+		input_options.add_argument('--sublist3r', default=False, action='store_true', help='Run sublist3r module')
+		input_options.add_argument('--reconng', default=False, action='store_true', help='Run recon-ng module')
+		args = self.parser.parse_args()
+		return args
+
+	def collectSubDomain(self, domain, isRunCloudFlare, cloudFlareUserName, cloudFlarePassword, isBruteForce):
+		self.enumSubDomain.GetSubDomains(domain, isRunCloudFlare, cloudFlareUserName, cloudFlarePassword, isBruteForce)
+
+if __name__ == "__main__":
+	domainRecon=EnumSubDomain()
+	cli_parsed = domainRecon.create_cli_parser()
+	if cli_parsed.h:
+		domainRecon.parser.print_help()
+		sys.exit()
+	domainRecon.collectSubDomain(cli_parsed.domain, 
+		cli_parsed.sublist3r,
+		cli_parsed.reconng,
+		cli_parsed.cloud_enum, 
+		cli_parsed.username, 
+		cli_parsed.password, 
+		cli_parsed.bruteforce)
+
 		

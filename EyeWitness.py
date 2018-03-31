@@ -588,3 +588,7 @@ class EyeWitness(object):
                 if not os.path.isdir(self.outPath):
                     raise
             self.RunEyeWitness(file, self.outPath)
+
+if __name__ == "__main__":
+    eyeWitness=EyeWitness()
+    eyeWitness.CaptureScreenShots()
