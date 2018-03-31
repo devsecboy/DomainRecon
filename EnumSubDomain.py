@@ -83,27 +83,37 @@ class EnumSubDomain(object):
 					subDomains.append(row[0])
 		os.rename(cloudEnumOutput, self.globalVariables.cloudFlareDir+cloudEnumOutput)
 
-	def GetSubDomains(self, domain, isRunSublist3r, isRunReconNG, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
+	def GetSubDomains(self, domain, isRunSublist3r, isRunReconNG, isRunMassDNS, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
 		subDomains=list()
-		#Recon NG enumeration
+		outFile = self.globalVariables.outputDir + domain+'.txt'
+
 		try:
 			if isRunReconNG:
 				self.RunRecon(domain, subDomains, isBruteForce)
 		except:
 			print "Error in recon-ng"
+
 		try:
 			if isRunSublist3r:
 				self.runSublist3r(domain, subDomains)
 		except: 
 			print "Error in Sublist3r"
+
+		try:
+			if isRunMassDNS:
+				cmd = './massdns/scripts/ct.py ' + domain +' | ./massdns/bin/massdns -r massdns/lists/resolvers.txt -t A -o S -w ' + outFile
+				subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
+		except:
+			print "Error in MassDNS"
+
 		try:
 			if isRunCloudFlare:
 				self.runCloudflareEnum(domain, subDomains, coudFlareUserName, cloudFlarePassword)
 		except:
 			print "Error in Enum cloud flare"
 
-		file = self.globalVariables.outputDir + domain+'.txt'
-		with open (file, 'w') as fp:
+		
+		with open (outFile, 'a') as fp:
 			for subDomain in subDomains:
 				fp.write("%s\n" % subDomain)
 
@@ -118,6 +128,7 @@ class EnumSubDomain(object):
 		input_options.add_argument('--bruteforce', default=False, action='store_true', help='Is it require to do subdomain bruteforce using recon-ng')
 		input_options.add_argument('--sublist3r', default=False, action='store_true', help='Run sublist3r module')
 		input_options.add_argument('--reconng', default=False, action='store_true', help='Run recon-ng module')
+		input_options.add_argument('--massdns', default=False, action='store_true', help='Run MassDNS module')
 		args = self.parser.parse_args()
 		return args
 
@@ -130,6 +141,7 @@ if __name__ == "__main__":
 	domainRecon.GetSubDomains(cli_parsed.domain, 
 		cli_parsed.sublist3r,
 		cli_parsed.reconng,
+		cli_parsed.massdns,
 		cli_parsed.cloud_enum, 
 		cli_parsed.username, 
 		cli_parsed.password, 

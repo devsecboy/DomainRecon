@@ -9,5 +9,7 @@ To run the tool in ubuntu, follow the below mentioned steps
 07. sudo ./EyeWitness/setup/setup.sh
 08. create __init__.py in "Sublist3r" directory
 	Using command : touch ./Sublist3r/__init__.py
-
+09. sudo apt-get install libldns-dev
+10. cd massdns
+11. make
 Usage : python DomainRecon.py
