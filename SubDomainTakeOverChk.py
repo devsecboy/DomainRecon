@@ -8,12 +8,14 @@ import glob
 import certifi #install it in ubuntu : pip install urllib3[secure]
 import urllib3
 import os
+from GlobalVariables import *
 
 http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
 class SubDomainTakeOverChk(object):
 
 	def __init__(self):
+		self.globalVariables=GlobalVariables()
 		self.COMMON_HOSTING_PROVIDERS = {"heroku": "heroku", 
                             "zendesk": "zendesk", 
                             "bitbucket": "bitbucket",
@@ -32,18 +34,10 @@ class SubDomainTakeOverChk(object):
 		self.ANSI_GRN = '\033[0;32m' 
 		self.ANSI_CLR = '\033[0;0m'
 		self.userAgent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0"
-		self.inPath = './Output/'
-		self.outPath = './Output/SubTakeOver/'
 		self.timeout = 10
 
 	def runSubDomainTakeOverChk(self):
-		try: 
-			os.makedirs(self.outPath)
-		except OSError:
-			if not os.path.isdir(self.outPath):
-				raise
-		
-		files = glob.glob(self.inPath + "*.txt")
+		files = glob.glob(self.globalVariables.outputDir + "*.txt")
 		for file in files:
 			print "\n\n" + file
 			with open(file, "r") as f:
@@ -57,7 +51,7 @@ class SubDomainTakeOverChk(object):
 		print start_color + msg + end_color
 
 	def checkSubDomainTakeOver(self, file, domains_list):
-		outfile = self.outPath + file
+		outfile = self.globalVariables.subDomainTakeOverDir + file
 		with open(outfile, "w") as f:
 			for domain_line in domains_list:
 				domain = domain_line.strip()

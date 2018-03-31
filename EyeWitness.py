@@ -9,6 +9,7 @@ import signal
 import sys
 import time
 import webbrowser
+from GlobalVariables import *
 
 eyeWitnessPath = "./EyeWitness/"
 sys.path.insert(0,eyeWitnessPath)
@@ -54,6 +55,7 @@ class EyeWitness(object):
     def __init__(self):
         self.multi_counter = 0
         self.multi_total = 0
+        self.globalVariables=GlobalVariables()
 
     def create_cli_parser(self, inputFilePath, outputDir):
         parser = argparse.ArgumentParser(
@@ -578,10 +580,9 @@ class EyeWitness(object):
             duplicate_check(cli_parsed)
 
     def CaptureScreenShots(self):
-        self.inPath = './Output/'
-        files = glob.glob(self.inPath + "*.txt")
+        files = glob.glob(self.globalVariables.outputDir + "*.txt")
         for file in files:
-            self.outPath = './Output/Screenshot/'+ file
+            self.outPath = self.globalVariables.screenShotDir + file
             try: 
                 os.makedirs(self.outPath)
             except OSError:

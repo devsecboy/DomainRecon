@@ -9,6 +9,7 @@ import csv
 import string
 import socket
 import argparse
+from GlobalVariables import *
 
 cloudEnum = "./cloudflare_enum/"
 sys.path.insert(0,cloudEnum)
@@ -22,13 +23,12 @@ from recon.core.framework import Colors
 class EnumSubDomain(object):
 
 	def __init__(self):
-		#self.wordList = "./Resource/words.txt"
-		self.wordList = "./recon-ng/data/hostnames.txt"
+		self.globalVariables=GlobalVariables()
 
 	#subdomain bruteforcing
 	def RunBruteForce(self, reconb, domain):
 		module = reconb.do_load("recon/domains-hosts/brute_hosts")
-		module.do_set("WORDLIST " + self.wordList)
+		module.do_set("WORDLIST " + self.globalVariables.wordList)
 		module.do_set("SOURCE " + domain)
 		module.do_run(None)
 
@@ -81,7 +81,7 @@ class EnumSubDomain(object):
 			for row in csv.reader(csvfile, delimiter=','):
 				if not row[0] in subDomains:
 					subDomains.append(row[0])
-		os.rename(cloudEnumOutput, "./Output/cloud_enum_"+cloudEnumOutput)
+		os.rename(cloudEnumOutput, self.globalVariables.cloudFlareDir+cloudEnumOutput)
 
 	def GetSubDomains(self, domain, isRunSublist3r, isRunReconNG, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
 		subDomains=list()
@@ -102,7 +102,7 @@ class EnumSubDomain(object):
 		except:
 			print "Error in Enum cloud flare"
 
-		file = './Output/' + domain+'.txt'
+		file = self.globalVariables.outputDir + domain+'.txt'
 		with open (file, 'w') as fp:
 			for subDomain in subDomains:
 				fp.write("%s\n" % subDomain)
