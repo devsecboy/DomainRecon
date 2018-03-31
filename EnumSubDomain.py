@@ -121,16 +121,13 @@ class EnumSubDomain(object):
 		args = self.parser.parse_args()
 		return args
 
-	def collectSubDomain(self, domain, isRunCloudFlare, cloudFlareUserName, cloudFlarePassword, isBruteForce):
-		self.enumSubDomain.GetSubDomains(domain, isRunCloudFlare, cloudFlareUserName, cloudFlarePassword, isBruteForce)
-
 if __name__ == "__main__":
 	domainRecon=EnumSubDomain()
 	cli_parsed = domainRecon.create_cli_parser()
 	if cli_parsed.h:
 		domainRecon.parser.print_help()
 		sys.exit()
-	domainRecon.collectSubDomain(cli_parsed.domain, 
+	domainRecon.GetSubDomains(cli_parsed.domain, 
 		cli_parsed.sublist3r,
 		cli_parsed.reconng,
 		cli_parsed.cloud_enum, 

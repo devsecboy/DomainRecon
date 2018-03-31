@@ -8,26 +8,26 @@ class GlobalVariables(object):
         self.subDomainTakeOverDir = self.outputDir + "SubDomainTakeOver/"
         self.wordList = "./recon-ng/data/hostnames.txt"
 
-        try:
-    		os.makedirs(self.outputDir)
-		except OSError as e:
-    		if e.errno != errno.EEXIST:
-        		raise
+        try: 
+            os.makedirs(self.outputDir)
+        except OSError:
+            if not os.path.isdir(self.outputDir):
+                raise
 
-        try:
-    		os.makedirs(self.screenShotDir)
-		except OSError as e:
-    		if e.errno != errno.EEXIST:
-        		raise
+        try: 
+            os.makedirs(self.screenShotDir)
+        except OSError:
+            if not os.path.isdir(self.screenShotDir):
+                raise
 
-        try:
-    		os.makedirs(self.subDomainTakeOverDir)
-		except OSError as e:
-    		if e.errno != errno.EEXIST:
-        		raise
+        try: 
+            os.makedirs(self.subDomainTakeOverDir)
+        except OSError:
+            if not os.path.isdir(self.subDomainTakeOverDir):
+                raise
 
-        try:
-    		os.makedirs(self.cloudFlareDir)
-		except OSError as e:
-    		if e.errno != errno.EEXIST:
-        		raise
+        try: 
+            os.makedirs(self.cloudFlareDir)
+        except OSError:
+            if not os.path.isdir(self.cloudFlareDir):
+                raise
