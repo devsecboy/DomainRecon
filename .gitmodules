@@ -22,3 +22,6 @@
 [submodule "parameth"]
 	path = parameth
 	url = https://github.com/maK-/parameth.git
+[submodule "Recon-NG-API-Key-Creation"]
+	path = Recon-NG-API-Key-Creation
+	url = https://github.com/Raikia/Recon-NG-API-Key-Creation.git
