@@ -4,9 +4,6 @@
 [submodule "Sublist3r"]
 	path = Sublist3r
 	url = https://github.com/aboul3la/Sublist3r.git
-[submodule "recon-ng"]
-	path = recon-ng
-	url = https://github.com/methos2016/recon-ng.git
 [submodule "cloudflare_enum"]
 	path = cloudflare_enum
 	url = https://github.com/mandatoryprogrammer/cloudflare_enum.git
@@ -25,3 +22,6 @@
 [submodule "Recon-NG-API-Key-Creation"]
 	path = Recon-NG-API-Key-Creation
 	url = https://github.com/Raikia/Recon-NG-API-Key-Creation.git
+[submodule "recon-ng"]
+	path = recon-ng
+	url = https://bitbucket.org/LaNMaSteR53/recon-ng.git

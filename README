@@ -7,5 +7,8 @@ To run the tool in ubuntu, follow the below mentioned steps
 05. As Eyewitness required the root priviledges, run the shell script using below command. 
 sudo ./configure.sh 
 
+Configure Recon NG
+Create all the API key listed in : Recon-NG-API-Key-Creation/README-v4.8.3.md 
+
 
 Usage : python EnumSubDomain.py -h
