@@ -134,6 +134,7 @@ class EnumSubDomain(object):
 		input_options.add_argument('--sublist3r', default=False, action='store_true', help='Run sublist3r module')
 		input_options.add_argument('--reconng', default=False, action='store_true', help='Run recon-ng module')
 		input_options.add_argument('--massdns', default=False, action='store_true', help='Run MassDNS module')
+		input_options.add_argument('--filename', metavar='FilePath', default=None, help='Filepath contains a list of Subdomains')
 		args = self.parser.parse_args()
 		return args
 
@@ -143,11 +144,24 @@ if __name__ == "__main__":
 	if cli_parsed.h:
 		domainRecon.parser.print_help()
 		sys.exit()
-	domainRecon.GetSubDomains(cli_parsed.domain, 
-		cli_parsed.sublist3r,
-		cli_parsed.reconng,
-		cli_parsed.massdns,
-		cli_parsed.cloud_enum, 
-		cli_parsed.username, 
-		cli_parsed.password, 
-		cli_parsed.bruteforce)
+	if cli_parsed.filename:
+		print cli_parsed.filename
+		with open(cli_parsed.filename, "r") as ins:
+			for line in ins:
+				domainRecon.GetSubDomains(line, 
+					cli_parsed.sublist3r,
+					cli_parsed.reconng,
+					cli_parsed.massdns,
+					cli_parsed.cloud_enum, 
+					cli_parsed.username, 
+					cli_parsed.password, 
+					cli_parsed.bruteforce)
+	else:
+		domainRecon.GetSubDomains(cli_parsed.domain, 
+			cli_parsed.sublist3r,
+			cli_parsed.reconng,
+			cli_parsed.massdns,
+			cli_parsed.cloud_enum, 
+			cli_parsed.username, 
+			cli_parsed.password, 
+			cli_parsed.bruteforce)
