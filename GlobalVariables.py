@@ -5,7 +5,7 @@ class GlobalVariables(object):
         self.outputDir = './Output/'
         self.screenShotDir = self.outputDir + "ScreenShot/"
         self.cloudFlareDir = self.outputDir + "CloudFlare/"
-        self.subDomainTakeOverDir = self.outputDir + "SubDomainTakeOver/"
+        self.cnameEnumDir = self.outputDir + "CNameEnum/"
         self.wordList = "./recon-ng/data/hostnames.txt"
 
         try: 
@@ -21,9 +21,9 @@ class GlobalVariables(object):
                 raise
 
         try: 
-            os.makedirs(self.subDomainTakeOverDir)
+            os.makedirs(self.cnameEnumDir)
         except OSError:
-            if not os.path.isdir(self.subDomainTakeOverDir):
+            if not os.path.isdir(self.cnameEnumDir):
                 raise
 
         try: 

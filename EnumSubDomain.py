@@ -12,6 +12,7 @@ import socket
 import argparse
 from GlobalVariables import *
 import subprocess
+import dns.resolver
 
 cloudEnum = "./cloudflare_enum/"
 sys.path.insert(0,cloudEnum)
@@ -119,9 +120,10 @@ class EnumSubDomain(object):
 		except:
 			print "Error in Enum cloud flare"
 		
-		with open (outFile, 'w') as fp:
-			for subDomain in subDomains:
-				fp.write("%s\n" % subDomain)
+		if isRunReconNG | isRunSublist3r | isRunMassDNS | isRunCloudFlare:
+			with open (outFile, 'w') as fp:
+				for subDomain in subDomains:
+					fp.write("%s\n" % subDomain)
 
 		try:
 			if isCnameEnum:
@@ -132,7 +134,9 @@ class EnumSubDomain(object):
 	def EnumCNAMEOfDomain(self):
 		files = glob.glob(self.globalVariables.outputDir + "*.txt")
 		for file in files:
-			cnameEnumFile = open(file+"cname_enum.txt", 'w')
+			cnameFileName=self.globalVariables.cnameEnumDir+(file[file.rfind("/")-len(file)+1:]).replace(".txt","")+"_cname.txt"
+			cnameEnumFile = open(cnameFileName, 'w')
+
 			with open(file, "r") as f:
 				for line in f:
 					isPrint=True
