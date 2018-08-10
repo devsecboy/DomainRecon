@@ -7,6 +7,7 @@ import os
 from Sublist3r import sublist3r
 import csv
 import string
+import glob
 import socket
 import argparse
 from GlobalVariables import *
@@ -84,7 +85,7 @@ class EnumSubDomain(object):
 					subDomains.append(row[0])
 		os.rename(cloudEnumOutput, self.globalVariables.cloudFlareDir+cloudEnumOutput)
 
-	def GetSubDomains(self, domain, isRunSublist3r, isRunReconNG, isRunMassDNS, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce):
+	def GetSubDomains(self, domain, isRunSublist3r, isRunReconNG, isRunMassDNS, isRunCloudFlare, coudFlareUserName, cloudFlarePassword, isBruteForce, isCnameEnum):
 		subDomains=list()
 		outFile = self.globalVariables.outputDir + domain+'.txt'
 
@@ -122,6 +123,41 @@ class EnumSubDomain(object):
 			for subDomain in subDomains:
 				fp.write("%s\n" % subDomain)
 
+		try:
+			if isCnameEnum:
+				self.EnumCNAMEOfDomain()
+		except:
+			print "Error in CName Enumeration"
+
+	def EnumCNAMEOfDomain(self):
+		files = glob.glob(self.globalVariables.outputDir + "*.txt")
+		for file in files:
+			cnameEnumFile = open(file+"cname_enum.txt", 'w')
+			with open(file, "r") as f:
+				for line in f:
+					isPrint=True
+					domain = line.split('\n')
+					
+					try:
+						# Basic query
+						for rdata in dns.resolver.query(domain[0], 'CNAME') :
+							if isPrint:
+								cnameEnumFile.write("\n" + domain[0] + " ==> ")
+								isPrint=False
+							cnameEnumFile.write(str(rdata.target));
+					except:
+						try:
+							resolver = dns.resolver.Resolver()
+							resolver.nameservers = ['8.8.8.8'] 	
+							for rdata in resolver.query(domain, 'CNAME') :
+								if isPrint:
+									cnameEnumFile.write("\n" + domain[0] + " ==> ")
+									isPrint=False
+								cnameEnumFile.write(str(rdata.target));
+						except:
+							isPrint=False
+			cnameEnumFile.close()
+
 	def create_cli_parser(self):
 		self.parser = argparse.ArgumentParser(add_help=False, description="Domain recon is a tool to gather information about target")
 		self.parser.add_argument('-h', '-?', '--h', '-help', '--help', action="store_true", help=argparse.SUPPRESS)
@@ -135,6 +171,7 @@ class EnumSubDomain(object):
 		input_options.add_argument('--reconng', default=False, action='store_true', help='Run recon-ng module')
 		input_options.add_argument('--massdns', default=False, action='store_true', help='Run MassDNS module')
 		input_options.add_argument('--filename', metavar='FilePath', default=None, help='Filepath contains a list of Subdomains')
+		input_options.add_argument('--cname_enum', default=False, action='store_true', help='CNAME Enumeration of domains')
 		args = self.parser.parse_args()
 		return args
 
@@ -155,7 +192,8 @@ if __name__ == "__main__":
 					cli_parsed.cloud_enum, 
 					cli_parsed.username, 
 					cli_parsed.password, 
-					cli_parsed.bruteforce)
+					cli_parsed.bruteforce,
+					cli_parsed.cname_enum)
 	else:
 		domainRecon.GetSubDomains(cli_parsed.domain, 
 			cli_parsed.sublist3r,
@@ -164,4 +202,5 @@ if __name__ == "__main__":
 			cli_parsed.cloud_enum, 
 			cli_parsed.username, 
 			cli_parsed.password, 
-			cli_parsed.bruteforce)
+			cli_parsed.bruteforce,
+			cli_parsed.cname_enum)
