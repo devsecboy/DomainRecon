@@ -4,8 +4,8 @@ class GlobalVariables(object):
     def __init__(self):
         self.outputDir = './Output/'
         self.screenShotDir = self.outputDir + "ScreenShot/"
-        self.cloudFlareDir = self.outputDir + "CloudFlare/"
         self.cnameEnumDir = self.outputDir + "CNameEnum/"
+        self.s3Bucket = self.outputDir + "s3Bucket/"
         self.wordList = "./recon-ng/data/hostnames.txt"
 
         try: 
@@ -27,7 +27,7 @@ class GlobalVariables(object):
                 raise
 
         try: 
-            os.makedirs(self.cloudFlareDir)
+            os.makedirs(self.s3Bucket)
         except OSError:
-            if not os.path.isdir(self.cloudFlareDir):
+            if not os.path.isdir(self.s3Bucket):
                 raise

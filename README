@@ -8,7 +8,7 @@ To run the tool in ubuntu, follow the below mentioned steps
 sudo ./configure.sh 
 
 Configure Recon NG
-Create all the API key listed in : Recon-NG-API-Key-Creation/README-v4.8.3.md 
+Create all the API key listed in : https://github.com/Raikia/Recon-NG-API-Key-Creation/blob/master/README-v4.8.3.md 
 
 
 Usage : python EnumSubDomain.py -h
