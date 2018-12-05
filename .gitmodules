@@ -25,3 +25,6 @@
 [submodule "recon-ng"]
 	path = recon-ng
 	url = https://bitbucket.org/LaNMaSteR53/recon-ng.git
+[submodule "S3Scanner"]
+	path = S3Scanner
+	url = https://github.com/sa7mon/S3Scanner.git
