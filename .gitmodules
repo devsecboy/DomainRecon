@@ -4,24 +4,12 @@
 [submodule "Sublist3r"]
 	path = Sublist3r
 	url = https://github.com/aboul3la/Sublist3r.git
-[submodule "cloudflare_enum"]
-	path = cloudflare_enum
-	url = https://github.com/mandatoryprogrammer/cloudflare_enum.git
 [submodule "massdns"]
 	path = massdns
 	url = https://github.com/blechschmidt/massdns.git
 [submodule "masscan"]
 	path = masscan
 	url = https://github.com/robertdavidgraham/masscan.git
-[submodule "gobuster"]
-	path = gobuster
-	url = https://github.com/OJ/gobuster.git
-[submodule "parameth"]
-	path = parameth
-	url = https://github.com/maK-/parameth.git
-[submodule "Recon-NG-API-Key-Creation"]
-	path = Recon-NG-API-Key-Creation
-	url = https://github.com/Raikia/Recon-NG-API-Key-Creation.git
 [submodule "recon-ng"]
 	path = recon-ng
 	url = https://bitbucket.org/LaNMaSteR53/recon-ng.git
