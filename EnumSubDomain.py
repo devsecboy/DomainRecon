@@ -16,14 +16,14 @@ import dns.resolver
 import logging
 import coloredlogs
 
+seBucketScanner = "./S3Scanner/"
+sys.path.insert(0,seBucketScanner)
+import s3utils as s3
+
 reconPath = "./recon-ng/"
 sys.path.insert(0,reconPath)
 from recon.core import base
 from recon.core.framework import Colors
-
-seBucketScanner = "./S3Scanner/"
-sys.path.insert(0,seBucketScanner)
-import s3utils as s3
 
 class EnumSubDomain(object):
 
