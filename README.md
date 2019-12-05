@@ -16,8 +16,10 @@ chmod 777 installscript
 
 # Configuration 
 - To Configure Censys 
-  - Repalce Key and ID in installscript and GlobalVariables.py file
+  - Repalce Key and ID in installscript and GlobalVariables.py files
 - To Configure aws key and secret (for S3Scanner)
   ```
   aws configure
   ```
+| WARNING: This was tested in stand alone Ubuntu 18.04 Virtual Machine. |
+| --- |
