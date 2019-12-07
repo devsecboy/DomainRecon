@@ -10,7 +10,7 @@ Review below screenshot for details description..
 # Installation 
 Following command used to run installscript (Take sometime to configure)
 ```
-chmod 777 installscript
+chmod +x installscript
 ./installscript
 ```
 
