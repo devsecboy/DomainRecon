@@ -37,7 +37,7 @@ cd $GOPATH/src/github.com/OWASP/Amass
 sudo go install ./...
 sudo ln -s $GOPATH/bin/amass /usr/local/bin/
 
-cd $currentDir && sudo go get -u github.com/subfinder/subfinder
+cd $currentDir && sudo go get -u github.com/projectdiscovery/subfinder/cmd/subfinder
 cd $GOPATH/src/github.com/subfinder/subfinder
 sudo go install
 sudo ln -s $GOPATH/bin/subfinder /usr/local/bin/
