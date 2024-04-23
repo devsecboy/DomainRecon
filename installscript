@@ -3,7 +3,6 @@
 #https://whois.arin.net/ui/query.do
 #https://apps.db.ripe.net/db-web-ui/#/query
 
-currentDir=`pwd`
 sudo apt-get --assume-yes update
 sudo apt-get --assume-yes upgrade
 sudo apt-get --assume-yes autoremove
@@ -31,8 +30,7 @@ sudo cp -R go/* /usr/lib/go-1.22.2/
 sudo rm /usr/bin/go
 sudo ln -s /usr/lib/go-1.22.2/bin/go /usr/bin
 
-cd $currentDir
-export GOPATH=$(go env | grep "GOPATH" | cut -d"\"" -f2)
+export GOPATH=$(go env | grep "GOPATH" | cut -d"'" -f2)
 
 go install -v github.com/owasp-amass/amass/v4/...@master
 sudo ln -s $GOPATH/bin/amass /usr/local/bin/
@@ -62,7 +60,7 @@ sudo ln -s $GOPATH/bin/httprobe /usr/local/bin/
 #Browse to https://censys.io/account, and set two environment variables with your API ID and API secret
 export CENSYS_API_ID=XXXXX
 export CENSYS_API_SECRET=XXXXX
-cd .. && git clone https://github.com/christophetd/censys-subdomain-finder
+git clone https://github.com/christophetd/censys-subdomain-finder
 cd censys-subdomain-finder
 pip3 install -r requirements.txt
 chmod +x censys-subdomain-finder.py
@@ -74,7 +72,7 @@ make
 sudo ln -s $(pwd)/bin/massdns /usr/local/bin/
 
 sudo apt-get --assume-yes install git make gcc
-git clone https://github.com/robertdavidgraham/masscan
+cd .. && git clone https://github.com/robertdavidgraham/masscan
 cd masscan
 make
 sudo ln -s $(pwd)/bin/masscan /usr/local/bin/
@@ -97,6 +95,7 @@ chmod +x findomain
 sudo mv findomain /usr/bin/findomain
 
 go install github.com/mailru/easyjson/...@v0.7.7
+sudo ln -s $GOPATH/bin/easyjson /usr/local/bin/
 git clone --depth 1 https://github.com/jimen0/fdns.git
 cd fdns
 go generate
