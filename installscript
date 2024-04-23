@@ -6,8 +6,8 @@
 currentDir=`pwd`
 sudo apt-get --assume-yes update
 sudo apt-get --assume-yes upgrade
+sudo apt-get --assume-yes autoremove
 sudo apt-get --assume-yes install awscli
-sudo apt-get --assume-yes install python-pip
 sudo apt-get --assume-yes install python3-pip
 sudo apt-get --assume-yes install git
 sudo apt-get --assume-yes install nmap
@@ -15,68 +15,48 @@ sudo apt --assume-yes install curl
 sudo apt --assume-yes install sslscan
 sudo apt --assume-yes install phantomjs
 sudo apt --assume-yes install whois
-sudo pip install webscreenshot
-sudo pip install webtech
-sudo pip install -r requirements.txt
+pip3 install webscreenshot
+pip3 install webtech
+pip3 install bs4 
+pip3 install requests 
+pip3 install lxml 
 		
-#if go version < 1.13.4, then it was possible to amass failed with string.replaceAll function error so replaced with latest version
+#if go version < 1.22.2, then it was possible to amass failed with string.replaceAll function error so replaced with latest version
 mkdir ExtTool && cd ExtTool
 rm -rf go-*
-wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
-tar -xvf go1.13.4.linux-amd64.tar.gz
-sudo mkdir /usr/lib/go-1.13.4
-sudo cp -R go/* /usr/lib/go-1.13.4/
+wget https://dl.google.com/go/go1.22.2.linux-amd64.tar.gz
+tar -xvf go1.22.2.linux-amd64.tar.gz
+sudo mkdir /usr/lib/go-1.22.2
+sudo cp -R go/* /usr/lib/go-1.22.2/
 sudo rm /usr/bin/go
-sudo ln -s /usr/lib/go-1.13.4/bin/go /usr/bin
+sudo ln -s /usr/lib/go-1.22.2/bin/go /usr/bin
 
 cd $currentDir
 export GOPATH=$(go env | grep "GOPATH" | cut -d"\"" -f2)
-export GO111MODULE=on
-sudo go get -v -u github.com/OWASP/Amass/v3/...
-cd $GOPATH/src/github.com/OWASP/Amass
-sudo go install ./...
+
+go install -v github.com/owasp-amass/amass/v4/...@master
 sudo ln -s $GOPATH/bin/amass /usr/local/bin/
 
-cd $currentDir && sudo go get -v github.com/projectdiscovery/subfinder/cmd/subfinder
-cd $GOPATH/src/github.com/projectdiscovery/subfinder/cmd/subfinder
-sudo go install
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 sudo ln -s $GOPATH/bin/subfinder /usr/local/bin/
 
-cd $currentDir && sudo go get github.com/OJ/gobuster
-cd $GOPATH/src/github.com/OJ/gobuster
-sudo go install
+go install github.com/OJ/gobuster/v3@latest
 sudo ln -s $GOPATH/bin/gobuster /usr/local/bin/
 
-cd $currentDir && sudo go get github.com/Amar-Myana/certdomainfinder
-cd $GOPATH/src/github.com/Amar-Myana/certdomainfinder
-sudo go install
-sudo ln -s $GOPATH/bin/certdomainfinder /usr/local/bin/
-
-cd $currentDir && sudo go get -u github.com/jimen0/fdns/cmd/fdns
-cd $GOPATH/src/github.com/jimen0/fdns/cmd/fdns
-sudo go install
-sudo ln -s $GOPATH/bin/fdns /usr/local/bin/
-
-cd $currentDir && sudo go get github.com/tomnomnom/hacks/filter-resolved
-cd $GOPATH/src/github.com/tomnomnom/hacks/filter-resolved
-sudo go install
-sudo ln -s $GOPATH/bin/filter-resolved /usr/local/bin/
-
-cd $currentDir && sudo go get github.com/lanrat/certgraph
-cd $GOPATH/src/github.com/lanrat/certgraph
-sudo go install
+go install github.com/lanrat/certgraph@latest
 sudo ln -s $GOPATH/bin/certgraph /usr/local/bin/
 
-cd $currentDir && cd ExtTool
-git clone https://github.com/Edu4rdSHL/findomain.git
-cd findomain
-sudo ln -s $(pwd)/bin/linux/findomain-linux /usr/local/bin/
+go install -v github.com/sa7mon/s3scanner@latest
+sudo ln -s $GOPATH/bin/s3scanner /usr/local/bin/
 
-cd .. && git clone https://github.com/UnaPibaGeek/ctfr.git
-cd ctfr
-pip3 install -r requirements.txt
-chmod +x ctfr.py
-sudo ln -s $(pwd)/ctfr.py /usr/local/bin/
+go install -v github.com/hakluke/haktrails@latest
+sudo ln -s $GOPATH/bin/haktrails /usr/local/bin/
+
+go install github.com/gwen001/github-subdomains@latest
+sudo ln -s $GOPATH/bin/github-subdomains /usr/local/bin/
+
+go install github.com/tomnomnom/httprobe@latest
+sudo ln -s $GOPATH/bin/httprobe /usr/local/bin/
 
 #Register an account (free) on https://censys.io/register
 #Browse to https://censys.io/account, and set two environment variables with your API ID and API secret
@@ -84,34 +64,44 @@ export CENSYS_API_ID=XXXXX
 export CENSYS_API_SECRET=XXXXX
 cd .. && git clone https://github.com/christophetd/censys-subdomain-finder
 cd censys-subdomain-finder
-pip install -r requirements.txt
 pip3 install -r requirements.txt
-chmod +x censys_subdomain_finder.py
-sudo ln -s $(pwd)/censys_subdomain_finder.py /usr/local/bin/
+chmod +x censys-subdomain-finder.py
+sudo ln -s $(pwd)/censys-subdomain-finder.py /usr/local/bin/
 
 cd .. && git clone https://github.com/blechschmidt/massdns.git
 cd massdns
 make
 sudo ln -s $(pwd)/bin/massdns /usr/local/bin/
 
-sudo apt-get --assume-yes install git gcc make libpcap-dev
-cd .. && git clone https://github.com/robertdavidgraham/masscan
+sudo apt-get --assume-yes install git make gcc
+git clone https://github.com/robertdavidgraham/masscan
 cd masscan
 make
 sudo ln -s $(pwd)/bin/masscan /usr/local/bin/
 
-cd .. && git clone https://github.com/sa7mon/S3Scanner.git
-cd S3Scanner
-pip install -r requirements.txt
-#chmod +x s3scanner.py
-#NotWorking after creating: 
-#ln -s $(pwd)/s3scanner.py /usr/local/bin/
+cd .. && git clone https://github.com/UnaPibaGeek/ctfr.git
+cd ctfr
+pip3 install -r requirements.txt
+chmod +x ctfr.py
+sudo ln -s $(pwd)/ctfr.py /usr/local/bin/
 
 cd .. && git clone https://github.com/chris408/ct-exposer.git
 cd ct-exposer
 pip3 install -r requirements.txt
 chmod +x ct-exposer.py
 sudo ln -s $(pwd)/ct-exposer.py /usr/local/bin/
+
+curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
+unzip findomain-linux.zip
+chmod +x findomain
+sudo mv findomain /usr/bin/findomain
+
+go install github.com/mailru/easyjson/...@v0.7.7
+git clone --depth 1 https://github.com/jimen0/fdns.git
+cd fdns
+go generate
+go install cmd/fdns/fdns.go
+
 #=====
 
 #Enabled sslv2 and sslv3 in openssl
