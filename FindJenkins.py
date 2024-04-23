@@ -28,14 +28,14 @@ class FindJenkins(object):
 		headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:54.0) Gecko/20100101 Firefox/54.0","Connection":"close","Accept-Language":"en-US,en;q=0.5","Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Upgrade-Insecure-Requests":"1"}
 		response = self.session.get(URL, headers=headers, timeout=15, verify=False)
 		if "Jenkins" in response.text:
-			print "found"
+			print ("found")
 			if 'Jenkins-Crumb' in response.text:
 				CRUMB = re.compile('Jenkins-Crumb", "(.+?)"').findall(response.text)[0]
 				GetUser(IP,PORT,FILE,CRUMB)
 			else:
 				GetUser(IP,PORT,FILE,"")
 		else:
-			print "Not Found"	
+			print ("Not Found")	
 
 	def EnumerateIPToFindJenkins(self, domain):
 		outUpIP="{}{}/{}".format(self.globalVariables.outputDir, domain, "upIP.txt")
@@ -51,9 +51,9 @@ class FindJenkins(object):
 			try:
 				self.TestJenkins(host.strip(), '8080')
 			except: 
-				print host.strip() + ": Not find"
+				print (host.strip() + ": Not find")
 
 			try:
 				self.TestJenkins(host.strip(), '8081')
 			except:
-				print host.strip() + ": Not find"
+				print (host.strip() + ": Not find")

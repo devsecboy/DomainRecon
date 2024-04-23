@@ -13,12 +13,12 @@ class SubDomainCollector(object):
 		self.outIPv4Ranges="{}{}/{}".format(self.globalVariables.outputDir, domain, "ipv4ranges.txt")
 		file = open(self.outIPv4Ranges, "r")
 		for ipRange in file:
-  			ipRanges.append(ipRange)
-  		
-  		self.outIPv6Ranges="{}{}/{}".format(self.globalVariables.outputDir, domain, "ipv6ranges.txt")
+			ipRanges.append(ipRange)
+		
+		self.outIPv6Ranges="{}{}/{}".format(self.globalVariables.outputDir, domain, "ipv6ranges.txt")
 		file = open(self.outIPv6Ranges, "r")
 		for ipRange in file:
-  			ipRanges.append(ipRange)
+			ipRanges.append(ipRange)
 
 		output=''
 		for ipRange in ipRanges: 
@@ -33,10 +33,10 @@ class SubDomainCollector(object):
 	def SubDoainsFromAmass(self, domain, amassactive, amasspassive):
 		output=''
 		if amassactive:
-			print "processing amass active scan.."
+			print ("processing amass active scan..")
 			output+=self.globalVariables.CommandExecutor("amass enum -active -d {}".format(domain))
 		if amasspassive:
-			print "processing amass passive scan.."
+			print ("processing amass passive scan..")
 			output+=self.globalVariables.CommandExecutor("amass enum -passive -d {}".format(domain))
 		return output
 
@@ -98,21 +98,21 @@ class SubDomainCollector(object):
 	def GetAllDomains(self, domain, organization, bgpipspace, bgpamass, censys, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, outFileName):
 
 		if bgpipspace:
-			print "processing bgp.net.."
+			print ("processing bgp.net..")
 			self.CollectIPSpaces(organization, domain)
 
 		if bgpamass:
-			print "processing bgp ip ranges + amass.."
+			print ("processing bgp ip ranges + amass..")
 			output=self.SubDomainsFromIPSpaces(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "BGP IP Ranges + Amass\n" + output)
 		
 		if censys:
-			print "processing Censys.."
+			print ("processing Censys..")
 			output=self.SubDomainsCensys(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "Censys\n" + output)
 		
 		if certdomain:
-			print "processing certdomainfinder.."
+			print ("processing certdomainfinder..")
 			output=self.SubDomainsCertDomainFinder(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "cert domain finder\n" + output)
 		
@@ -121,37 +121,37 @@ class SubDomainCollector(object):
 			self.globalVariables.WriteTextToFile(outFileName, "amass\n" + output)
 		
 		if subfinder:
-			print "processing subfinder.."
+			print ("processing subfinder..")
 			output=self.SubDomainsSubFinder(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "subfinder\n" + output)
 		
 		if ctfr:
-			print "processing CTFR.."
+			print ("processing CTFR..")
 			output=self.SubDomainsCTFR(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "CTFR\n" + output)
 
 		if ctexposer:
-			print "processing CT-EXposer.."
+			print ("processing CT-EXposer..")
 			output=self.SubDomainsCTExposer(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "CT-Exposer\n" + output)
 
 		if certgraph:
-			print "processing CertGraph.."
+			print ("processing CertGraph..")
 			output=self.SubDomainsCertGraph(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "Cert Graph\n" + output)
 		
 		if certspotter:
-			print "processing CertSpotter.."
+			print ("processing CertSpotter..")
 			output=self.SubDomainsCertSpotter(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "Cert Spotter\n" + output)
 
 		if fdnsr7:
-			print "processing Rapid7.."
+			print ("processing Rapid7..")
 			output=self.SubDomainsFDNSRapid7(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "Rapid7\n" + output)
 			
 		if commonspeak:
-			print "processing CommonSpeak.." + domain
+			print ("processing CommonSpeak.." + domain)
 			output=self.SubDomainsCommonSpeak(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "Common Speak\n" + output)
 

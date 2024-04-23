@@ -17,6 +17,7 @@ class CollectIPSpaces(object):
 		headerVal=''
 		requetURL="https://bgp.he.net/search?search%5Bsearch%5D=google&commit=Search"
 		response=requests.head(requetURL, headers=self.globalVariables.bgp_headers, timeout=10)
+		print (response)
 		for header in (response.headers['Set-Cookie']).split(" "):
 			if header.find("path=") == 0 and header.find("--") != -1:
 				headerVal=header.split("=")[1]
@@ -46,7 +47,8 @@ class CollectIPSpaces(object):
 		finalRanges=[]
 		outBgpHeNet="{}{}/{}".format(self.globalVariables.outputDir, domain, "bgp_he_net.txt")
 		requetURL="https://bgp.he.net/search?search%5Bsearch%5D={}&commit=Search".format(companyName)
-		request = requests.get(requetURL, cookies={'c':self.get_bgp_session_cookie()}, headers=self.globalVariables.bgp_headers, timeout=10)
+		#request = requests.get(requetURL, cookies={'c':self.get_bgp_session_cookie()}, headers=self.globalVariables.bgp_headers, timeout=10) //No cookie needed it's straight forward url call
+		request = requests.get(requetURL, headers=self.globalVariables.bgp_headers, timeout=10)
 		soup = BeautifulSoup(request.text, "lxml")
 		result=''
 		for column in soup.findAll("td"):
