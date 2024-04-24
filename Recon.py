@@ -2,7 +2,6 @@
 from SubDomainCollector import *
 import os
 import sys
-import commands
 import argparse
 from FindJenkins import *
 
@@ -34,29 +33,29 @@ class Recon(object):
 
 
 	def WebScreenshotOnUpHost(self):
-		print "WebScreenShot process running.." 
+		print ("WebScreenShot process running..") 
 		self.globalVariables.CommandExecutor("webscreenshot -i {} -o {}".format(self.outUniqUpHosts, self.webScreenShotReportDir))
 
 	def SSLScanOnUpHost(self):
-		print "SSLScan process running.." 
+		print ("SSLScan process running.." )
 		self.globalVariables.CommandExecutor("sslscan --targets={} --ssl2 --ssl3 --xml={}".format(self.outUniqUpHosts, self.outSSLScanResult))
 
 	def S3ScannerUpHosts(self):
-		print "S3Scanner process running.." 
+		print ("S3Scanner process running..") 
 		self.globalVariables.CommandExecutor("python {} {} --out-file {}".format(self.globalVariables.S3ScannerPath, self.outUniqUpHosts, self.s3scannerOutput))
 
 	def WellKnownFilesDirGoBuster(self):
-		print "GoBuster process running.." 
+		print ("GoBuster process running..")
 		upHostFile = open(self.outUniqUpHosts, "r")
 		for host in upHostFile:
 			try:
 				output=self.globalVariables.CommandExecutor("gobuster dir -u https://{} -w {} -s \"200,204,301,302,307\" -k".format(host.strip(), self.globalVariables.goBusterCommonWordlist))
 				self.globalVariables.WriteTextToFile(self.outWelknownDirGoBuster, output)
 			except:
-				print "Gobuster error"
+				print ("Gobuster error")
 
 	def ToolAndTechOutput(self):
-		print "Webtech process running.."
+		print ("Webtech process running..")
 		output='' 
 		tmpFileName='temp.txt'
 		if os.path.exists(tmpFileName):
@@ -72,7 +71,7 @@ class Recon(object):
 		os.remove(tmpFileName)
 
 	def MassScanOnUpHost(self, specificPort="", topPort=True):
-		print "MassScan process running.." 
+		print ("MassScan process running..") 
 		upHostFile = open(self.outUniqUpHosts, "r")
 		for host in upHostFile:
 			try:
@@ -94,32 +93,32 @@ class Recon(object):
 			self.globalVariables.CommandExecutor("sudo masscan -p{} -iL {} --max-rate 10000 -oG {}".format(specificPort, self.outUniqUpHostsUniqIP, self.massScanOutputDir))
 
 	def CheckForOpenRedirection(self):
-		print "Open redirection script running.." 
+		print ("Open redirection script running..") 
 		upHostFile = open(self.outUniqUpHosts, "r")
 		for host in upHostFile:
 			output="\n\nHTTP Request\n"+host
-			status, rawOutput = commands.getstatusoutput("curl -v --connect-timeout 5 --expect100-timeout 5 https://{}//attacker.com".format(host.strip()))
+			status, rawOutput = self.globalVariables.CommandExecutor("curl -v --connect-timeout 5 --expect100-timeout 5 https://{}//attacker.com".format(host.strip()))
 			output+=rawOutput
-			status, rawOutput = commands.getstatusoutput("curl -v --connect-timeout 5 --expect100-timeout 5 http://{}//attacker.com".format(host.strip()))
+			status, rawOutput = self.globalVariables.CommandExecutor("curl -v --connect-timeout 5 --expect100-timeout 5 http://{}//attacker.com".format(host.strip()))
 			output+=rawOutput
 			self.globalVariables.WriteTextToFile(self.outOpenRedirectionOutput, output)
 			#cat check_for_OpenRedirection.txt | grep Location:
 
 	def CheckForInternalIPDisclosure(self):
-		print "Check for internal IP script running.." 
+		print ("Check for internal IP script running..") 
 		upHostFile = open(self.outUniqUpHosts, "r")
 		for host in upHostFile:
 			output="\n\nHTTP Request\n"+host
-			status, rawOutput = commands.getstatusoutput("curl -v -H \"Host:\" --http1.0 --connect-timeout 5 --expect100-timeout 5 http://{}".format(host.strip()))
+			status, rawOutput = self.globalVariables.CommandExecutor("curl -v -H \"Host:\" --http1.0 --connect-timeout 5 --expect100-timeout 5 http://{}".format(host.strip()))
 			output+=rawOutput
 			self.globalVariables.WriteTextToFile(self.outCURLRequestOutput, output)
 
 	def CheckForCRLFInjection(self):
-		print "CRLF Injection script running.." 
+		print ("CRLF Injection script running..") 
 		upHostFile = open(self.outUniqUpHosts, "r")
 		for host in upHostFile:
 			output="\n\nHTTP Request\n"+host
-			status, rawOutput = commands.getstatusoutput("curl -v --connect-timeout 5 --expect100-timeout 5 http://{}/%0d%0a%09CRLFInjection:%20CRLFInjection".format(host.strip()))
+			status, rawOutput = self.globalVariables.CommandExecutor("curl -v --connect-timeout 5 --expect100-timeout 5 http://{}/%0d%0a%09CRLFInjection:%20CRLFInjection".format(host.strip()))
 			output+=rawOutput
 			self.globalVariables.WriteTextToFile(self.outCRLFInjectionOutput, output)
 			#cat check_for_CRLFInjection.txt | grep " CRLFInjection"
@@ -137,7 +136,7 @@ class Recon(object):
 		input_options.add_argument('--bgpipspace', default=False, action='store_true', help='collect organization ip ranges from bgp.he.net')
 		input_options.add_argument('--bgpamass', default=False, action='store_true', help='collect domains from bgp.he.net + amass')
 		input_options.add_argument('--censys', default=False, action='store_true', help='collect domains from censys')
-		input_options.add_argument('--certdomain', default=False, action='store_true', help='collect domain using cert domain finder')
+		#input_options.add_argument('--certdomain', default=False, action='store_true', help='collect domain using cert domain finder')
 		input_options.add_argument('--amassactive', default=False, action='store_true', help='collect domain using amass active scan')
 		input_options.add_argument('--amasspassive', default=False, action='store_true', help='collect domain using amass passive scan')
 		input_options.add_argument('--subfinder', default=False, action='store_true', help='collect domain using subfinder')
@@ -154,7 +153,7 @@ class Recon(object):
 		input_options.add_argument('--webtech', default=False, action='store_true', help='Run webtech on all collected domains')
 		input_options.add_argument('--internalip', default=False, action='store_true', help='Run internal ip script on all collected domains')
 		input_options.add_argument('--crlfinjection', default=False, action='store_true', help='Run crlf injection script on all collected domains')
-		input_options.add_argument('--gobuster', default=False, action='store_true', help='Run sublist3r module')
+		input_options.add_argument('--gobuster', default=False, action='store_true', help='Run gobuster module for common files and directory')
 		input_options.add_argument('--openredirection', default=False, action='store_true', help='Run open redirection on all collected domains')
 		input_options.add_argument('--masscan', default=False, action='store_true', help='Run masscan on all collected domains')
 		input_options.add_argument('--jenkins', default=False, action='store_true', help='Run jenkins on all collected IP ranges collected using bgp.he.net')
@@ -166,7 +165,7 @@ class Recon(object):
 		self.subDomainCollector=SubDomainCollector()
 		
 		outputDir="{}{}".format(self.globalVariables.outputDir, domain)
-		print outputDir
+		print (outputDir)
 		if not os.path.exists(outputDir):
 			os.makedirs(outputDir)
 
@@ -206,7 +205,7 @@ def print_banner():
 	"| | | |/ _ \\| '_ ` _ \\ / _` | | '_ \\  | |_) / _ \\/ __/ _ \\| '_ \\ \n"+
 	"| |_| | (_) | | | | | | (_| | | | | | |  _ <  __/ (_| (_) | | | |\n"+
 	"|____/ \\___/|_| |_| |_|\\__,_|_|_| |_| |_| \\_\\___|\\___\\___/|_| |_|\n")
-	print banner
+	print (banner)
 
 if __name__ == "__main__":
 	'''file = open('domains.txt', "r")
@@ -222,7 +221,7 @@ if __name__ == "__main__":
 	if cli_parsed.h:
 		recon.parser.print_help()
 		sys.exit()
-	if cli_parsed.domain == "" and cli_parsed.organization == "" or (cli_parsed.bgpipspace is False and cli_parsed.bgpamass is False and cli_parsed.censys is False and cli_parsed.certdomain is False and cli_parsed.amassactive is False and cli_parsed.amasspassive is False and cli_parsed.subfinder is False and cli_parsed.ctfr is False and cli_parsed.ctexposer is False and cli_parsed.certgraph is False and cli_parsed.certspotter is False and cli_parsed.fdnsr7 is False and cli_parsed.commonspeak is False and cli_parsed.cnames is False and cli_parsed.s3scanner is False and cli_parsed.webscreenshot is False and cli_parsed.sslscan is False and cli_parsed.webtech is False and cli_parsed.internalip is False and cli_parsed.crlfinjection is False and cli_parsed.gobuster is False and cli_parsed.openredirection is False and cli_parsed.masscan is False and cli_parsed.jenkins is False):
+	if cli_parsed.domain == "" and cli_parsed.organization == "" or (cli_parsed.bgpipspace is False and cli_parsed.bgpamass is False and cli_parsed.censys is False and cli_parsed.amassactive is False and cli_parsed.amasspassive is False and cli_parsed.subfinder is False and cli_parsed.ctfr is False and cli_parsed.ctexposer is False and cli_parsed.certgraph is False and cli_parsed.certspotter is False and cli_parsed.fdnsr7 is False and cli_parsed.commonspeak is False and cli_parsed.cnames is False and cli_parsed.s3scanner is False and cli_parsed.webscreenshot is False and cli_parsed.sslscan is False and cli_parsed.webtech is False and cli_parsed.internalip is False and cli_parsed.crlfinjection is False and cli_parsed.gobuster is False and cli_parsed.openredirection is False and cli_parsed.masscan is False and cli_parsed.jenkins is False):
 			recon.parser.print_help()
 			sys.exit()
 	else:
@@ -231,7 +230,7 @@ if __name__ == "__main__":
 						cli_parsed.bgpipspace,
 						cli_parsed.bgpamass,
 						cli_parsed.censys,
-						cli_parsed.certdomain,
+						False,#cli_parsed.certdomain,
 						cli_parsed.amassactive,
 						cli_parsed.amasspassive,
 						cli_parsed.subfinder,

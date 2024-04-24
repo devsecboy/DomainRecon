@@ -46,7 +46,7 @@ class CollectIPSpaces(object):
 		ipRanges=[]
 		finalRanges=[]
 		outBgpHeNet="{}{}/{}".format(self.globalVariables.outputDir, domain, "bgp_he_net.txt")
-		requetURL="https://bgp.he.net/search?search%5Bsearch%5D={}&commit=Search".format(companyName)
+		requetURL="https://bgp.he.net/search?search%5Bsearch%5D=\"{}\"&commit=Search".format(companyName)
 		#request = requests.get(requetURL, cookies={'c':self.get_bgp_session_cookie()}, headers=self.globalVariables.bgp_headers, timeout=10) //No cookie needed it's straight forward url call
 		request = requests.get(requetURL, headers=self.globalVariables.bgp_headers, timeout=10)
 		soup = BeautifulSoup(request.text, "lxml")

@@ -47,19 +47,22 @@ class SubDomainCollector(object):
 		return self.globalVariables.CommandExecutor("gobuster dns -d {} -w commonspeak-wordlist.txt | cut -d' ' -f2".format(domain))
 
 	def SubDomainsCertDomainFinder(self, domain):
-		return self.globalVariables.CommandExecutor("certdomainfinder {}".format(domain))
+		#old tool so removed
+		#return self.globalVariables.CommandExecutor("certdomainfinder {}".format(domain))
+		return ""
 
 	def SubDomainsFDNSRapid7(self, domain):
 		fDNSRapid7URL=''
 		request = requests.get(self.globalVariables.fDNSRapid7, headers=self.globalVariables.bgp_headers, timeout=10)
 		soup = BeautifulSoup(request.text, "lxml")
-		for row in soup.findAll("tr", class_="ungated"):
-			column=row.findAll('td')
-			filename=column[0].find('a').get_text().strip()
+		
+		for row in soup.findAll("tr", class_="gated"):
+			column=row.findAll('td', {"class": "filename"})
+			filename=column[0].get_text().strip()
 			if filename.find("fdns_any") != -1:
 				fDNSRapid7URL=filename
 		fDNSRapid7URL=self.globalVariables.fDNSRapid7 + fDNSRapid7URL
-		return self.globalVariables.CommandExecutor("fdns -domain {} -record A -t 4 -url {}".format(domain, fDNSRapid7URL))
+		return self.globalVariables.CommandExecutor("fdns --domains {} --records \"A,AAAA,CNAME\" --goroutines 4 --url {}".format(domain, fDNSRapid7URL))
 
 	def SubDomainsFindDomain(self, domain):
 		return self.globalVariables.CommandExecutor("findomain-linux -t {} | cut -d' ' -f3".format(domain))
@@ -76,7 +79,7 @@ class SubDomainCollector(object):
 	def SubDomainsCensys(self, domain):
 		os.environ['CENSYS_API_ID']=self.globalVariables.censysApiID
 		os.environ['CENSYS_API_SECRET']=self.globalVariables.censysApiSecret
-		return self.globalVariables.CommandExecutor("censys_subdomain_finder.py {} | cut -d' ' -f4".format(domain))
+		return self.globalVariables.CommandExecutor("censys-subdomain-finder.py {} | cut -d' ' -f4".format(domain))
 
 	def SubDomainsCertSpotter(self, domain):
 		requetURL="{}{}".format(self.globalVariables.certSpotterURL, domain)
@@ -89,7 +92,7 @@ class SubDomainCollector(object):
 		return output
 
 	def checkForUpHostUsingFilterResolved(self, fileName, outFileName):
-		self.globalVariables.CommandExecutor("cat {} | filter-resolved > {}".format(fileName, outFileName))
+		self.globalVariables.CommandExecutor("cat {} | httprobe > {}".format(fileName, outFileName))
 	
 	def checkForCNAMEUsingMassDNS(self, fileName, resolverOutPutFileName, outFileName):
 		self.globalVariables.CommandExecutor("massdns -r {}lists/resolvers.txt {} > {}".format(self.globalVariables.massDNSPath, fileName, resolverOutPutFileName))
