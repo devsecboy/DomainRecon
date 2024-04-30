@@ -136,6 +136,10 @@ class Recon(object):
 		input_options.add_argument('--bgpipspace', default=False, action='store_true', help='collect organization ip ranges from bgp.he.net')
 		input_options.add_argument('--bgpamass', default=False, action='store_true', help='collect domains from bgp.he.net + amass')
 		input_options.add_argument('--censys', default=False, action='store_true', help='collect domains from censys')
+		input_options.add_argument('--assetfinder', default=False, action='store_true', help='collect domains from assetfinder')
+		input_options.add_argument('--gitlab', default=False, action='store_true', help='collect domains from gitlabs')
+		input_options.add_argument('--github', default=False, action='store_true', help='collect domains from github')
+		input_options.add_argument('--finddomain', default=False, action='store_true', help='collect domains from FindDomain')
 		#input_options.add_argument('--certdomain', default=False, action='store_true', help='collect domain using cert domain finder')
 		input_options.add_argument('--amassactive', default=False, action='store_true', help='collect domain using amass active scan')
 		input_options.add_argument('--amasspassive', default=False, action='store_true', help='collect domain using amass passive scan')
@@ -160,7 +164,7 @@ class Recon(object):
 		args = self.parser.parse_args()
 		return args
 
-	def GeDomainRecon(self, domain, organization, bgpipspace, bgpamass, censys, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, cnames, s3scanner, webscreenshot, sslscan, webtech, internalip, crlfinjection, gobuster, openredirection, masscan, jenkins):
+	def GeDomainRecon(self, domain, organization, bgpipspace, bgpamass, censys, assetfinder, github, gitlab, finddomain, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, cnames, s3scanner, webscreenshot, sslscan, webtech, internalip, crlfinjection, gobuster, openredirection, masscan, jenkins):
 		self.createVariables(domain)
 		self.subDomainCollector=SubDomainCollector()
 		
@@ -169,7 +173,7 @@ class Recon(object):
 		if not os.path.exists(outputDir):
 			os.makedirs(outputDir)
 
-		self.subDomainCollector.GetAllDomains(domain, organization, bgpipspace, bgpamass, censys, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, self.outSubDomainPath)
+		self.subDomainCollector.GetAllDomains(domain, organization, bgpipspace, bgpamass, censys, assetfinder, github, gitlab, finddomain, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, self.outSubDomainPath)
 		self.subDomainCollector.checkForUpHostUsingFilterResolved(self.outSubDomainPath, self.outUpHosts)
 		self.globalVariables.CommandExecutor("sed -i '/^$/d' {} | sort {} | uniq > {}".format(self.outUpHosts, self.outUpHosts, self.outUniqUpHostsAll))
 		self.globalVariables.CommandExecutor("cat {} | grep {} > {}".format(self.outUniqUpHostsAll, domain, self.outUniqUpHosts))
@@ -221,7 +225,7 @@ if __name__ == "__main__":
 	if cli_parsed.h:
 		recon.parser.print_help()
 		sys.exit()
-	if cli_parsed.domain == "" and cli_parsed.organization == "" or (cli_parsed.bgpipspace is False and cli_parsed.bgpamass is False and cli_parsed.censys is False and cli_parsed.amassactive is False and cli_parsed.amasspassive is False and cli_parsed.subfinder is False and cli_parsed.ctfr is False and cli_parsed.ctexposer is False and cli_parsed.certgraph is False and cli_parsed.certspotter is False and cli_parsed.fdnsr7 is False and cli_parsed.commonspeak is False and cli_parsed.cnames is False and cli_parsed.s3scanner is False and cli_parsed.webscreenshot is False and cli_parsed.sslscan is False and cli_parsed.webtech is False and cli_parsed.internalip is False and cli_parsed.crlfinjection is False and cli_parsed.gobuster is False and cli_parsed.openredirection is False and cli_parsed.masscan is False and cli_parsed.jenkins is False):
+	if cli_parsed.domain == "" and cli_parsed.organization == "" or (cli_parsed.bgpipspace is False and cli_parsed.bgpamass is False and cli_parsed.censys is False and cli_parsed.assetfinder is False and cli_parsed.github is False and cli_parsed.gitlab is False and cli_parsed.finddomain is False and cli_parsed.amassactive is False and cli_parsed.amasspassive is False and cli_parsed.subfinder is False and cli_parsed.ctfr is False and cli_parsed.ctexposer is False and cli_parsed.certgraph is False and cli_parsed.certspotter is False and cli_parsed.fdnsr7 is False and cli_parsed.commonspeak is False and cli_parsed.cnames is False and cli_parsed.s3scanner is False and cli_parsed.webscreenshot is False and cli_parsed.sslscan is False and cli_parsed.webtech is False and cli_parsed.internalip is False and cli_parsed.crlfinjection is False and cli_parsed.gobuster is False and cli_parsed.openredirection is False and cli_parsed.masscan is False and cli_parsed.jenkins is False):
 			recon.parser.print_help()
 			sys.exit()
 	else:
@@ -230,6 +234,10 @@ if __name__ == "__main__":
 						cli_parsed.bgpipspace,
 						cli_parsed.bgpamass,
 						cli_parsed.censys,
+						cli_parsed.assetfinder,
+						cli_parsed.github, 
+						cli_parsed.gitlab, 
+						cli_parsed.finddomain, 
 						False,#cli_parsed.certdomain,
 						cli_parsed.amassactive,
 						cli_parsed.amasspassive,

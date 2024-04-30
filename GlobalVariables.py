@@ -6,7 +6,12 @@ class GlobalVariables(object):
 		super(GlobalVariables, self).__init__()
 		self.censysApiID="XXXX"
 		self.censysApiSecret="XXXX"
+		self.gitLabToken="XXXX"
+		self.gitHubToken="XXXX"
 		self.goBusterCommonWordlist="common.txt"
+		self.subdomainWordlist="commonspeak-wordlist.txt"
+		#self.subdomainWordlist="subdomain_wordlist.txt"
+		self.goBusterThread = 10
 		self.outputDir="./Output/"
 		self.massDNSPath="./ExtTool/massdns/"
 		self.S3ScannerPath="./ExtTool/S3Scanner/s3scanner.py"

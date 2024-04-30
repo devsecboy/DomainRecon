@@ -43,8 +43,17 @@ class SubDomainCollector(object):
 	def SubDomainsSubFinder(self, domain):
 		return self.globalVariables.CommandExecutor("subfinder -d {}".format(domain))
 
+	def SubDomainsGitHubSubDomains(self, domain):
+		return self.globalVariables.CommandExecutor("github-subdomains -d {} -t {} |sed -r 's/.*(dm[^\\.]*\\.[^/ ]*).*/\1/g' | grep -v 'github.com\\|keyword:\\|current search' | cut -d ' ' -f 2 | sed 's/\x1B\\[[0-9;]\\{{1,\\}}[A-Za-z]//g'".format(domain, self.globalVariables.gitHubToken))
+
+	def SubDomainsGitLabSubdomains(self, domain):
+		return self.globalVariables.CommandExecutor("gitlab-subdomains -d {} -t {}".format(domain, self.globalVariables.gitLabToken))
+
+	def SubDomainsAssetFinder(self, domain):
+		return self.globalVariables.CommandExecutor("assetfinder --subs-only {}".format(domain))
+
 	def SubDomainsCommonSpeak(self, domain):
-		return self.globalVariables.CommandExecutor("gobuster dns -d {} -w commonspeak-wordlist.txt | cut -d' ' -f2".format(domain))
+		return self.globalVariables.CommandExecutor("gobuster dns -d {} -w {} -t {} | cut -d' ' -f2".format(domain, self.globalVariables.subdomainWordlist, self.globalVariables.goBusterThread))
 
 	def SubDomainsCertDomainFinder(self, domain):
 		#old tool so removed
@@ -62,10 +71,11 @@ class SubDomainCollector(object):
 			if filename.find("fdns_any") != -1:
 				fDNSRapid7URL=filename
 		fDNSRapid7URL=self.globalVariables.fDNSRapid7 + fDNSRapid7URL
+		print (fDNSRapid7URL)
 		return self.globalVariables.CommandExecutor("fdns --domains {} --records \"A,AAAA,CNAME\" --goroutines 4 --url {}".format(domain, fDNSRapid7URL))
 
 	def SubDomainsFindDomain(self, domain):
-		return self.globalVariables.CommandExecutor("findomain-linux -t {} | cut -d' ' -f3".format(domain))
+		return self.globalVariables.CommandExecutor("findomain -t {} | cut -d' ' -f3".format(domain))
 
 	def SubDomainsCTFR(self, domain):
 		return self.globalVariables.CommandExecutor("ctfr.py -d {} | cut -d' ' -f3".format(domain))
@@ -98,7 +108,7 @@ class SubDomainCollector(object):
 		self.globalVariables.CommandExecutor("massdns -r {}lists/resolvers.txt {} > {}".format(self.globalVariables.massDNSPath, fileName, resolverOutPutFileName))
 		self.globalVariables.CommandExecutor("cat {} | grep CNAME > {}".format(resolverOutPutFileName, outFileName))
 
-	def GetAllDomains(self, domain, organization, bgpipspace, bgpamass, censys, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, outFileName):
+	def GetAllDomains(self, domain, organization, bgpipspace, bgpamass, censys, assetfinder, github, gitlab, finddomain, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, outFileName):
 
 		if bgpipspace:
 			print ("processing bgp.net..")
@@ -113,7 +123,27 @@ class SubDomainCollector(object):
 			print ("processing Censys..")
 			output=self.SubDomainsCensys(domain)
 			self.globalVariables.WriteTextToFile(outFileName, "Censys\n" + output)
+
+		if gitlab:
+			print ("processing Gitlab subdomains..")
+			output=self.SubDomainsGitLabSubdomains(domain)
+			self.globalVariables.WriteTextToFile(outFileName, "Gitlab\n" + output)
+
+		if assetfinder:
+			print ("processing assetfinder..")
+			output=self.SubDomainsAssetFinder(domain)
+			self.globalVariables.WriteTextToFile(outFileName, "Assetfinder\n" + output)
+
+		if github:
+			print ("processing GitHub subdomains..")
+			output=self.SubDomainsGitHubSubDomains(domain)
+			self.globalVariables.WriteTextToFile(outFileName, "Github\n" + output)
 		
+		if finddomain:
+			print ("processing FindDomain..")
+			output=self.SubDomainsFindDomain(domain)
+			self.globalVariables.WriteTextToFile(outFileName, "FindDomain\n" + output)
+
 		if certdomain:
 			print ("processing certdomainfinder..")
 			output=self.SubDomainsCertDomainFinder(domain)

@@ -56,6 +56,15 @@ sudo ln -s $GOPATH/bin/github-subdomains /usr/local/bin/
 go install github.com/tomnomnom/httprobe@latest
 sudo ln -s $GOPATH/bin/httprobe /usr/local/bin/
 
+go install github.com/gwen001/github-subdomains@latest
+sudo ln -s $GOPATH/bin/github-subdomains /usr/local/bin/
+
+go install github.com/gwen001/gitlab-subdomains@latest
+sudo ln -s $GOPATH/bin/gitlab-subdomains /usr/local/bin/
+
+go install github.com/tomnomnom/assetfinder@latest
+sudo ln -s $GOPATH/bin/assetfinder /usr/local/bin/
+
 #Register an account (free) on https://censys.io/register
 #Browse to https://censys.io/account, and set two environment variables with your API ID and API secret
 export CENSYS_API_ID=XXXXX
@@ -89,19 +98,18 @@ pip3 install -r requirements.txt
 chmod +x ct-exposer.py
 sudo ln -s $(pwd)/ct-exposer.py /usr/local/bin/
 
-curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
-unzip findomain-linux.zip
-chmod +x findomain
-sudo mv findomain /usr/bin/findomain
-
 go install github.com/mailru/easyjson/...@v0.7.7
 sudo ln -s $GOPATH/bin/easyjson /usr/local/bin/
-git clone --depth 1 https://github.com/jimen0/fdns.git
+cd .. && git clone --depth 1 https://github.com/jimen0/fdns.git
 cd fdns
 go generate
 go install cmd/fdns/fdns.go
 sudo ln -s $GOPATH/bin/fdns /usr/local/bin/
 
+cd .. && curl -LO https://github.com/findomain/findomain/releases/latest/download/findomain-linux.zip
+unzip findomain-linux.zip
+chmod +x findomain
+sudo mv findomain /usr/bin/findomain
 #=====
 
 #Enabled sslv2 and sslv3 in openssl
