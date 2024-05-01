@@ -92,6 +92,12 @@ pip3 install -r requirements.txt
 chmod +x ctfr.py
 sudo ln -s $(pwd)/ctfr.py /usr/local/bin/
 
+cd .. && https://github.com/subfission/HostResolver.git
+cd HostResolver
+pip3 install -r requirements.txt
+chmod +x resolv.py
+sudo ln -s $(pwd)/resolv.py /usr/local/bin/
+
 cd .. && git clone https://github.com/chris408/ct-exposer.git
 cd ct-exposer
 pip3 install -r requirements.txt

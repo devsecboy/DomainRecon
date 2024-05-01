@@ -12,7 +12,10 @@ class Recon(object):
 
 	def createVariables(self, domain):
 		self.globalVariables=GlobalVariables()
-		self.outSubDomainPath="{}{}/{}".format(self.globalVariables.outputDir, domain, "all_domains.txt")
+		self.outSubDomainPath="{}{}/{}".format(self.globalVariables.outputDir, domain, "all_output.txt")
+		self.outSubDomainFilePath="{}{}/{}".format(self.globalVariables.outputDir, domain, "all_domains.txt")
+		self.outResolveDomain="{}{}/{}".format(self.globalVariables.outputDir, domain, "resolve.txt")
+		self.outResolveUniqDomain="{}{}/{}".format(self.globalVariables.outputDir, domain, "resolve_uniq.txt")
 		self.outUpHosts="{}{}/{}".format(self.globalVariables.outputDir, domain, "uphosts.txt")
 		self.outUniqUpHostsAll="{}{}/{}".format(self.globalVariables.outputDir, domain, "uphosts_uniq_all.txt")
 		self.outUniqUpHosts="{}{}/{}".format(self.globalVariables.outputDir, domain, "uphosts_uniq.txt")
@@ -174,7 +177,9 @@ class Recon(object):
 			os.makedirs(outputDir)
 
 		self.subDomainCollector.GetAllDomains(domain, organization, bgpipspace, bgpamass, censys, assetfinder, github, gitlab, finddomain, certdomain, amassactive, amasspassive, subfinder, ctfr, ctexposer, certgraph, certspotter, fdnsr7, commonspeak, self.outSubDomainPath)
-		self.subDomainCollector.checkForUpHostUsingFilterResolved(self.outSubDomainPath, self.outUpHosts)
+		self.subDomainCollector.ExtractDomainOnly(self.outSubDomainPath, self.outSubDomainFilePath)
+		self.subDomainCollector.checkForResolvedDomain(self.outSubDomainFilePath, self.outResolveDomain, self.outResolveUniqDomain)
+		self.subDomainCollector.checkForUpHostUsingHttpProbe(self.outSubDomainFilePath, self.outUpHosts)
 		self.globalVariables.CommandExecutor("sed -i '/^$/d' {} | sort {} | uniq > {}".format(self.outUpHosts, self.outUpHosts, self.outUniqUpHostsAll))
 		self.globalVariables.CommandExecutor("cat {} | grep {} > {}".format(self.outUniqUpHostsAll, domain, self.outUniqUpHosts))
 

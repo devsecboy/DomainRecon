@@ -101,10 +101,20 @@ class SubDomainCollector(object):
 				output += item +"\n"
 		return output
 
-	def checkForUpHostUsingFilterResolved(self, fileName, outFileName):
+	def ExtractDomainOnly(self, fileName, outFileName):
+		self.globalVariables.CommandExecutor("cat {} | grep '\\.' | sed -r 's/.(dm[^.].[/ ])./\\1/g' | sort -u | grep -v '+' > {}".format(fileName, outFileName))
+
+	def checkForUpHostUsingHttpProbe(self, fileName, outFileName):
+		print ("Chacking domain using httprobe")
 		self.globalVariables.CommandExecutor("cat {} | httprobe > {}".format(fileName, outFileName))
+
+	def checkForResolvedDomain(self, fileName, outFileName, uniqResolvDomain):
+		print ("Resolving domain using resolve.py")
+		self.globalVariables.CommandExecutor("resolv.py {} | grep . | sort -u > {}".format(fileName, outFileName))
+		self.globalVariables.CommandExecutor("cat {} | grep -v 'unresolvable\\|RType' > {}".format(outFileName, uniqResolvDomain))
 	
 	def checkForCNAMEUsingMassDNS(self, fileName, resolverOutPutFileName, outFileName):
+		print ("Checking CNAMEs using MassDNS")
 		self.globalVariables.CommandExecutor("massdns -r {}lists/resolvers.txt {} > {}".format(self.globalVariables.massDNSPath, fileName, resolverOutPutFileName))
 		self.globalVariables.CommandExecutor("cat {} | grep CNAME > {}".format(resolverOutPutFileName, outFileName))
 
